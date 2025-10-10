@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-  TreeNodeInt* n=new TreeNodeInt(5);
+  TreeNodeInt* n=new TreeNodeInt(5); //First add node 5
   n->add(10);
   n->add(1);
   n->add(2);
@@ -14,3 +14,21 @@ int main() {
 
   cerr << "address of obj 4: " << n->find(4) << endl;
 }
+
+
+/*   
+
+                5
+              /  \
+             /    \ 
+            1     10             
+             \
+              2
+               \
+                4
+
+
+*/
+
+
+
