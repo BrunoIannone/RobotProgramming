@@ -11,7 +11,8 @@ find_package(rclcpp REQUIRED)
 
 # Find the other dependencies [geometry_msgs and turtlesim]
 # TODO here!
-
+find_package(geometry_msgs REQUIRED)
+find_package(turtlesim REQUIRED)
 # Adding new node turtle_square
 add_executable(turtle_square src/turtle_square.cpp)
 
@@ -20,7 +21,7 @@ add_executable(turtle_square src/turtle_square.cpp)
 # Remember to link the dependencies, you should write:
 # ament_target_dependencies(target_name dependency1 dependency2 ...)
 # TODO here!
-
+ament_target_dependencies(turtle_square geometry_msgs turtlesim rclcpp)
 # Install the executable to the lib/${PROJECT_NAME} directory
 install(
 	TARGETS

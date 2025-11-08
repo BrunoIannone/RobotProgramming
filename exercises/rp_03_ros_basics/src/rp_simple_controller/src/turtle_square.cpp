@@ -18,11 +18,12 @@ class TurtleSquareNode : public rclcpp::Node {
     // geometry_msgs::msg::Twist message] For simplicity, publish on
     // "/turtle1/cmd_vel"
     // TODO here!
-
+    velocity_pub = this->create_publisher<geometry_msgs::msg::Twist>("/turtle1/cmd_vel", 10);
     // Create the subscriber for the turtle pose [binded to turtlesim::msg::Pose
     // message] For simplicity, subscribe to "/turtle1/pose"
     // TODO here!
-
+    position_sub = this->create_subscription<turtlesim::msg::Pose>("/turtle1/pose", 10,
+    std::bind(&TurtleSquareNode::pose_callback, this,std::placeholders::_1));
     // Create the timer for the control loop
     // The timer is set to call the timer_callback function every 1millisecond
     // [1ms]
@@ -59,12 +60,34 @@ class TurtleSquareNode : public rclcpp::Node {
   void timer_callback() {
     // Commenting these to prevent unusued variable warning | errors since
     // -Wpedantic is set in the CMake :( float v = 0.0; float w = 0.0;
-
+  
     current_time += dt;
-
+    geometry_msgs::msg::Twist velocity_message;
     // TODO here!
-
-    // velocity_pub->publish(velocity_message);
+    if(current_time < side_length/trans_vel && !change){
+      velocity_message.linear.x =trans_vel;
+      velocity_message.angular.z = 0;
+    }
+    else if (current_time>side_length/trans_vel || change){
+        
+        if(!change){
+          current_time = 0;
+          change = true;
+        }
+        
+        if (current_time<angle_to_turn / rot_vel)
+        {
+          velocity_message.linear.x =0;
+          velocity_message.angular.z = rot_vel;
+        }
+        else{
+          change = false;
+          current_time = 0;
+        }
+        
+    }   
+  
+    velocity_pub->publish(velocity_message);
   }
 
   /**
@@ -74,6 +97,8 @@ class TurtleSquareNode : public rclcpp::Node {
    */
   void pose_callback(const turtlesim::msg::Pose::SharedPtr msg) {
     // TODO here!
+    RCLCPP_INFO(this->get_logger(), "x: %f  y: %f  theta: %f", msg->x, msg->y, msg->theta);
+
   }
   // Timer
   rclcpp::TimerBase::SharedPtr timer;
@@ -93,6 +118,7 @@ class TurtleSquareNode : public rclcpp::Node {
   // Pre-set velocities.
   float trans_vel = 1.0;
   float rot_vel = 1.0;
+  bool change = false;
 };
 
 int main(int argc, char** argv) {
