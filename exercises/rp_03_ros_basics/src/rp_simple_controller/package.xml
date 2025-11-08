@@ -10,6 +10,8 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
   <!-- Add the package dependencies down here. Remember, rclcpp, geometry_msgs and turtlesim -->
   <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>turtlesim</depend>
   <!-- <depend>$DEPENDENCY</depend>-->
   <!-- but not after this line -->
   <export>
