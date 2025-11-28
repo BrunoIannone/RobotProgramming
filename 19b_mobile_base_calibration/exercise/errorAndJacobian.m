@@ -1,9 +1,7 @@
 function [e, J] = errorAndJacobian(x,z)
   ticks = z(1:2);
-  ticks
   meas  = z(3:5);
-  meas
-  pause(5)
+  
   pred  = h_odom(x,ticks);
   e     = pred-meas;
   J     = zeros(3,3);

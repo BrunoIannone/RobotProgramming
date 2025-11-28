@@ -13,18 +13,17 @@ h = figure(1);
 more off;
 #load the calibration matrix
 disp('loading the matrix');
-Z=load("../datasets/differential_drive_calibration_data/differential_drive_calibration.txt");
+Z=load("../datasets/ls_calib.dat");
 
 #compute the ground truth trajectory
-TrueTrajectory=compute_odometry_trajectory(Z(:,3:5));
+TrueTrajectory=compute_odometry_trajectory(Z(:,1:3));
 disp('ground truth');
 hold on;
 plot(TrueTrajectory(:,1),TrueTrajectory(:,2), 'r-', 'linewidth', 2);
 pause(1);
-nominal_params = [-1;1;0.3];
-odom = stack_odometry(nominal_params,Z(:,1:2));
+
 #compute the uncalibrated odometry
-OdomTrajectory=compute_odometry_trajectory(odom);
+OdomTrajectory=compute_odometry_trajectory(Z(:,4:6));
 disp('odometry');
 hold on;
 plot(OdomTrajectory(:,1),OdomTrajectory(:,2), 'g-', 'linewidth', 2);
@@ -32,14 +31,12 @@ pause(1);
 
 disp('computing calibration parameters');
 #compute the calibration parameters
-[X,chi]=oneRound(nominal_params,Z');
-X
+X=ls_calibrate_odometry(Z);
+disp(X);
 pause(1);
 
 disp('computing calibrated odometry');
-#COdom=apply_odometry_correction(X,odom);
-COdom = stack_odometry(X,Z(:,1:2));
-
+COdom=apply_odometry_correction(X,Z(:,4:6));
 CalTrajectory=compute_odometry_trajectory(COdom);
 hold on;
 plot(CalTrajectory(:,1),CalTrajectory(:,2), 'b-', 'linewidth', 2);
